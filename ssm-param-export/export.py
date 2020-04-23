@@ -6,7 +6,7 @@ import json
 from string import Template
 
 # setup some generic stuff, boto object, pprint
-ssm = boto3.client('ssm', region_name="us-west-1")
+ssm = boto3.client('ssm')
 response = ssm.describe_parameters()
 pp = pprint.PrettyPrinter(indent=4)
 
