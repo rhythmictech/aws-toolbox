@@ -2,7 +2,6 @@
 
 import pprint
 import boto3
-import json
 from string import Template
 
 # setup some generic stuff, boto object, pprint
@@ -26,13 +25,13 @@ def get_value(name):
 def build_parameter(name, type, value):
     tpl_ssm_param = Template(
         """
-    resource "aws_ssm_parameter" "param_$name" {
-        name = "$name"
-        description = "$name - Automatically Imported"
-        type = "$type"
-        value = "$value"
-    }
-    """
+            resource "aws_ssm_parameter" "param_$name" {
+                name = "$name"
+                description = "$name - Automatically Imported"
+                type = "$type"
+                value = "$value"
+            }
+        """
     )
     print(tpl_ssm_param.substitute({"name": name, "type": type, "value": value}))
 
