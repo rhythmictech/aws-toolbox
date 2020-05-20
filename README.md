@@ -12,3 +12,12 @@ Exports all SSM Parameters visible to the currently logged in AWS account to Ter
 ## s3-map-buckets
 
 Maps out settings values assigned to S3 buckets and generate a Markdown document with the results
+
+## cloudformation-map
+
+Generates tabbed output of existing Cloud Formation
+
+## configure-map
+
+Inventories items from AWS Confg
+
