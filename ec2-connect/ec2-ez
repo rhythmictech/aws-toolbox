@@ -11,9 +11,13 @@ pp = pprint.PrettyPrinter(indent=2)
 ec2 = boto3.client("ec2")
 
 active_instances = []
-response = ec2.describe_instances(
-    Filters=[{"Name": "instance-state-name", "Values": ["running",]}]
-)
+try:
+    response = ec2.describe_instances(
+        Filters=[{"Name": "instance-state-name", "Values": ["running",]}]
+    )
+except Exception as e:
+    print("Something went wrong, most likely your AWS session has expired. Re-authenticate and try again")
+    exit()
 
 counter = 0
 for r in response["Reservations"]:
