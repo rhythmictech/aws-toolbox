@@ -8,31 +8,24 @@ from tabulate import tabulate
 
 print("\nEC2-EZ-Connect\n")
 pp = pprint.PrettyPrinter(indent=2)
-ec2 = boto3.client('ec2')
+ec2 = boto3.client("ec2")
 
 active_instances = []
 response = ec2.describe_instances(
-    Filters = [
-        {
-            'Name': 'instance-state-name',
-            'Values': [
-                'running',
-            ]
-            }
-        ]
-    )
+    Filters=[{"Name": "instance-state-name", "Values": ["running",]}]
+)
 
 counter = 0
-for r in response['Reservations']:
-    for i in r['Instances']:
-        instance_id = i['InstanceId']
-        az = i['Placement']['AvailabilityZone']
-        tags = i['Tags']
+for r in response["Reservations"]:
+    for i in r["Instances"]:
+        instance_id = i["InstanceId"]
+        az = i["Placement"]["AvailabilityZone"]
+        tags = i["Tags"]
         for t in tags:
             if t["Key"] == "Name":
                 name = t["Value"]
         try:
-            ip = i['PrivateIpAddress']
+            ip = i["PrivateIpAddress"]
         except:
             pass
         instance_details = {
@@ -40,8 +33,8 @@ for r in response['Reservations']:
             "name": name,
             "instance_id": instance_id,
             "az": az,
-            "ip": ip
-            }
+            "ip": ip,
+        }
         active_instances.append(instance_details)
         counter += 1
 """       
@@ -51,7 +44,15 @@ for instance in active_instances:
     counter += 1
 """
 print(tabulate(active_instances, headers="keys"))
-w = int(input("\n>> "))
-instance = active_instances[w]
-cmd = "aws ec2-instance-connect send-ssh-public-key --instance-id %s --instance-os-user %s --ssh-public-key file:///Users/ahynes/.ssh/id_rsa.pub --availability-zone %s && ssh %s@%s" % (instance['instance_id'],"root",instance['az'],"root",instance['ip'])
-subprocess.run(cmd, shell=True)
+print("\n(Q)uit or enter an id value to connect")
+user_input = input("\n>> ")
+if user_input == "q" or user_input == "Q":
+    exit()
+else:
+    w = int(user_input)
+    instance = active_instances[w]
+    cmd = (
+        "aws ec2-instance-connect send-ssh-public-key --instance-id %s --instance-os-user %s --ssh-public-key file:///Users/ahynes/.ssh/id_rsa.pub --availability-zone %s && ssh %s@%s"
+        % (instance["instance_id"], "root", instance["az"], "root", instance["ip"])
+    )
+    subprocess.run(cmd, shell=True)
