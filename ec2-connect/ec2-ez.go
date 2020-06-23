@@ -9,6 +9,8 @@ import (
     "os"
     "io/ioutil"
     "os/user"
+	"os/exec"
+	"log"
 )
 
 type Instance struct {
@@ -79,8 +81,7 @@ func main() {
     //fmt.Println(shellCommand)
 
     serv := ec2instanceconnect.New(session.New())
-    fmt.Println("AZ: ",instances[choice].Az)
-    //fmt.Println(string(data))
+
     input := &ec2instanceconnect.SendSSHPublicKeyInput{
         AvailabilityZone: aws.String(instances[choice].Az),
         InstanceId: aws.String(instances[choice].Id),
@@ -91,7 +92,16 @@ func main() {
     if erz != nil {
         fmt.Println(erz)
     } else {
+		// SUCCESS
         fmt.Println(res)
+		_ = res
+		var sshTarget string
+		sshTarget = "root@"+instances[choice].Ip
+		fmt.Println(sshTarget)
+
+		cmd := exec.Command("ssh", "-v", sshTarget)
+		err := cmd.Run()
+		log.Printf("command finished with error: %v", err)
     }
 }
 
